@@ -19,6 +19,8 @@ soup = BeautifulSoup(html)
 beerStylePageAllLinks = soup.find_all("a")
 with open('beerAdvocateData.txt', 'a') as f:
     for i in range(0, len(beerStylePageAllLinks)):
+        print "Running..."
+        print beerStylePageAllLinks[i]
         try:
             if beerStylePageAllLinks[i]['href'][0:12] == "/beer/style/":
                 if beerStylePageAllLinks[i]['href'] == "/beer/style/" or beerStylePageAllLinks[i]['href'] == "/beer/style/#navigation":
@@ -33,9 +35,12 @@ with open('beerAdvocateData.txt', 'a') as f:
                         html = response.read()
                         soup = BeautifulSoup(html)
                         data = soup.find_all("div", id="ba-content")
-                        matchObj = re.findall(r'[0-9]+', data[0].find_all("b")[2].text)
-                        if matchObj:
-                            threshold = 50 * int(int(matchObj[2]) / 50)
+                        try:
+                            matchObj = re.findall(r'[0-9]+', data[0].find_all("b")[2].text)
+                            if matchObj:
+                                threshold = 50 * int(int(matchObj[2]) / 50)
+                        except IndexError:
+                            threshold = 2000
                         info = data[0].find_all("a")
                         for k in range(0, len(info)):
                             if info[k].find("b") is not None and info[k].find("b").text != "-" and info[k].find("b").text.isdigit() == False:
